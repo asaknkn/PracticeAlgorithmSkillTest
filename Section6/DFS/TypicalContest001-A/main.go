@@ -16,63 +16,70 @@ type point struct {
 
 func main() {
 	sc.Split(bufio.ScanWords)
-	r := nextInt()
-	c := nextInt()
-	sy := nextInt() - 1
-	sx := nextInt() - 1
-	gy := nextInt() - 1
-	gx := nextInt() - 1
+	h := nextInt()
+	w := nextInt()
 
-	s := make([][]rune, r)
-	for i := 0; i < r; i++ {
+	s := make([][]rune, h)
+	for i := 0; i < h; i++ {
 		ss := next()
 		for _, v := range ss {
 			s[i] = append(s[i], v)
 		}
 	}
 
-	dist := make([][]int, r)
-	for i := 0; i < r; i++ {
-		for j := 0; j < c; j++ {
-			dist[i] = append(dist[i], -1)
+	var si, sj, gi, gj int
+	for i := 0; i < h; i++ {
+		for j := 0; j < w; j++ {
+			if s[i][j] == 's' {
+				si = i
+				sj = j
+			}
+			if s[i][j] == 'g' {
+				gi = i
+				gj = j
+			}
 		}
 	}
 
-	var q []point
-	q = append(q, point{x: sy, y: sx})
-	dist[sy][sx] = 0
+	visited := make([][]bool, h)
+	for i := 0; i < h; i++ {
+		for j := 0; j < w; j++ {
+			visited[i] = append(visited[i], false)
+		}
+	}
+
+	dfs(h, w, si, sj, visited, s)
+
+	if visited[gi][gj] == true {
+		fmt.Println("Yes")
+	} else {
+		fmt.Println("No")
+	}
+
+}
+
+func dfs(h, w, i, j int, visited [][]bool, s [][]rune) {
+	visited[i][j] = true
 
 	xdirection := []int{0, 1, 0, -1}
 	ydirection := []int{1, 0, -1, 0}
 
-	for {
-		if len(q) == 0 {
-			break
+	for k := 0; k < 4; k++ {
+		i2 := i + xdirection[k]
+		j2 := j + ydirection[k]
+
+		if (0 > i2 || i2 >= h) || (0 > j2 || j2 >= w) {
+			continue
 		}
 
-		i := q[0].x
-		j := q[0].y
-		q = q[1:]
+		if s[i][j] == '#' {
+			continue
+		}
 
-		for k := 0; k < 4; k++ {
-			i2 := i + xdirection[k]
-			j2 := j + ydirection[k]
-
-			if (0 > i2 || i2 >= r) || (0 > j2 || j2 >= c) {
-				continue
-			}
-
-			if s[i][j] == '#' {
-				continue
-			}
-
-			if dist[i2][j2] == -1 {
-				dist[i2][j2] = dist[i][j] + 1
-				q = append(q, point{x: i2, y: j2})
-			}
+		if visited[i2][j2] != true {
+			dfs(h, w, i2, j2, visited, s)
 		}
 	}
-	fmt.Println(dist[gy][gx])
 }
 
 // -*-*-*-*-*-*-*-*-

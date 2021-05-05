@@ -40,7 +40,7 @@ public class Main {
         int i2 = p.x + xdirection[i];
         int j2 = p.y + ydirection[i];
 
-        if ((0 > i2 || i2 >= r) && (0 > j2 || j2 >= c)) {
+        if ((0 > i2 || i2 >= r) || (0 > j2 || j2 >= c)) {
           continue;
         }
 
